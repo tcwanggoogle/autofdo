@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
   autofdo::AutoFDOProfileWriter writer(FLAGS_gcov_version);
   autofdo::ProfileCreator creator(FLAGS_binary);
-  if (creator.CreateProfile(FLAGS_profile, FLAGS_profiler, &writer,
+  if (creator.CreateProfile({FLAGS_profile}, FLAGS_profiler, &writer,
                             FLAGS_gcov)) {
     return 0;
   } else {

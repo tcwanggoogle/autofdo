@@ -32,16 +32,15 @@ namespace autofdo {
 uint64 ProfileCreator::GetTotalCountFromTextProfile(
     const string &input_profile_name) {
   ProfileCreator creator("");
-  if (!creator.ReadSample(input_profile_name, "text")) {
+  if (!creator.ReadSample({input_profile_name}, "text")) {
     return 0;
   }
   return creator.TotalSamples();
 }
 
-bool ProfileCreator::CreateProfile(const string &input_profile_name,
-                                   const string &profiler,
-                                   ProfileWriter *writer,
-                                   const string &output_profile_name) {
+bool ProfileCreator::CreateProfile(
+    const std::vector<string> &input_profile_name, const string &profiler,
+    ProfileWriter *writer, const string &output_profile_name) {
   if (!ReadSample(input_profile_name, profiler)) {
     return false;
   }
@@ -51,7 +50,7 @@ bool ProfileCreator::CreateProfile(const string &input_profile_name,
   return true;
 }
 
-bool ProfileCreator::ReadSample(const string &input_profile_name,
+bool ProfileCreator::ReadSample(const std::vector<string> &input_profile_name,
                                 const string &profiler) {
   if (profiler == "perf") {
     // Sets the regular expression to filter samples for a given binary.
@@ -128,7 +127,7 @@ uint64 ProfileCreator::TotalSamples() {
 
 bool MergeSample(const string &input_file, const string &input_profiler,
                  const string &binary, const string &output_file) {
-  TextSampleReaderWriter writer(output_file);
+  TextSampleReaderWriter writer({output_file});
   if (writer.IsFileExist()) {
     if (!writer.ReadAndSetTotalCount()) {
       return false;
@@ -136,7 +135,7 @@ bool MergeSample(const string &input_file, const string &input_profiler,
   }
 
   ProfileCreator creator(binary);
-  if (creator.ReadSample(input_file, input_profiler)) {
+  if (creator.ReadSample({input_file}, input_profiler)) {
     writer.Merge(creator.sample_reader());
     if (writer.Write(nullptr)) {
       return true;

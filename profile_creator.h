@@ -43,12 +43,12 @@ class ProfileCreator {
   static uint64 GetTotalCountFromTextProfile(const string &input_profile_name);
 
   // Creates AutoFDO profile, returns true if success, false otherwise.
-  bool CreateProfile(const string &input_profile_name, const string &profiler,
-                     autofdo::ProfileWriter *writer,
+  bool CreateProfile(const std::vector<string> &input_profile_name,
+                     const string &profiler, autofdo::ProfileWriter *writer,
                      const string &output_profile_name);
 
   // Reads samples from the input profile.
-  bool ReadSample(const string &input_profile_name,
+  bool ReadSample(const std::vector<string> &input_profile_name,
                   const string &profiler);
 
   // Creates output profile after reading from the input profile.

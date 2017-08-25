@@ -19,8 +19,6 @@
 #include <fstream>
 #include <iostream>
 
-DEFINE_string(profile, "perf.data",
-              "Profile file name");
 DEFINE_string(profiler, "perf",
               "Profile type");
 DEFINE_string(cgprofile, "cgprofile.txt",
@@ -63,9 +61,11 @@ int main(int argc, char **argv) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
 
+  std::vector<std::string> profiles(argv + 1, argv + argc);
+
   LLDProfileWriter writer;
   autofdo::ProfileCreator creator(FLAGS_binary);
-  if (creator.CreateProfile(FLAGS_profile, FLAGS_profiler, &writer,
+  if (creator.CreateProfile(profiles, FLAGS_profiler, &writer,
                             FLAGS_cgprofile)) {
     return 0;
   } else {
