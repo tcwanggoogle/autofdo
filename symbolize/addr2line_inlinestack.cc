@@ -189,8 +189,7 @@ bool InlineStackHandler::StartDIE(uint64 offset,
   die_stack_.push_back(tag);
 
   switch (tag) {
-    case DW_TAG_subprogram:
-    case DW_TAG_inlined_subroutine: {
+    case DW_TAG_subprogram: {
       // If we have two-level line tables, we don't need to read the
       // debug info to collect inline call information.
       if (have_two_level_line_tables_)
@@ -219,8 +218,7 @@ bool InlineStackHandler::StartDIE(uint64 offset,
 void InlineStackHandler::EndDIE(uint64 offset) {
   DwarfTag die = die_stack_.back();
   die_stack_.pop_back();
-  if ((die == DW_TAG_subprogram ||
-       die == DW_TAG_inlined_subroutine) &&
+  if (die == DW_TAG_subprogram &&
       !have_two_level_line_tables_) {
     // If the top level subprogram is used, we mark all subprograms in
     // the subprogram_stack_ as used.

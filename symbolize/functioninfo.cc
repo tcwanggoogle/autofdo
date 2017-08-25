@@ -209,8 +209,7 @@ bool CUFunctionInfoHandler::StartCompilationUnit(uint64 offset,
 bool CUFunctionInfoHandler::StartDIE(uint64 offset, enum DwarfTag tag,
                                      const AttributeList& attrs) {
   switch (tag) {
-    case DW_TAG_subprogram:
-    case DW_TAG_inlined_subroutine: {
+    case DW_TAG_subprogram: {
       current_function_info_ = new FunctionInfo;
       current_function_info_->lowpc = current_function_info_->highpc = 0;
       current_function_info_->name = "";
