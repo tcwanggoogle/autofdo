@@ -88,6 +88,7 @@ bool SampleReader::ReadAndSetTotalCount() {
 bool FileSampleReader::Read() {
   for (auto f : profile_file_)
     if (!Append(f)) return false;
+  return true;
 }
 
 bool TextSampleReaderWriter::Append(const string &profile_file) {
