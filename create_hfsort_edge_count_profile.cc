@@ -37,8 +37,12 @@ struct LLDProfileBuilder : SymbolTraverser {
   void Visit(const Symbol *node, const SymbolMap &symbol_map) {
     for (const auto &pos_count : node->pos_counts)
       for (const auto &target_count : pos_count.second.target_map)
-        os << target_count.second << ' ' << node->name() << ' '
-           << target_count.first << '\n';
+        os << std::hex
+		   << symbol_map.GetSymbolStartAddr(node->name()) << ' '
+		   << symbol_map.GetSymbolStartAddr(target_count.first) << ' '
+		   << 'C' << ' '
+		   << std::dec << target_count.second
+		   << '\n';
   }
 
   void Start(const SymbolMap &symbol_map) {

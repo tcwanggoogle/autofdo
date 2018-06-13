@@ -18,6 +18,10 @@ bin_PROGRAMS += create_lld_profile
 create_lld_profile_SOURCES = $(COMMON_PROFILE_CREATOR_FILES) create_lld_profile.cc
 create_lld_profile_LDADD = libquipper.a libglog.a libsymbolize.a libgflags.a
 
+bin_PROGRAMS += create_hfsort_edge_count_profile
+create_hfsort_edge_count_profile_SOURCES = $(COMMON_PROFILE_CREATOR_FILES) create_hfsort_edge_count_profile.cc
+create_hfsort_edge_count_profile_LDADD = libquipper.a libglog.a libsymbolize.a libgflags.a
+
 bin_PROGRAMS += dump_gcov
 dump_gcov_SOURCES = profile_reader.cc symbol_map.cc module_grouper.cc gcov.cc \
                     dump_gcov.cc

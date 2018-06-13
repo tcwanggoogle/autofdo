@@ -81,7 +81,7 @@ class SourceProfileLengther: public SymbolTraverser {
     num_functions_++;
   }
 
-  virtual void Visit(const Symbol *node) {
+  virtual void Visit(const Symbol *node, const SymbolMap &symbol_map) {
     // func_name, num_pos_counts, num_callsites
     length_ += 3;
     // offset_discr, num_targets, count * 2
@@ -108,7 +108,7 @@ class SourceProfileWriter: public SymbolTraverser {
   }
 
  protected:
-  virtual void Visit(const Symbol *node) {
+  virtual void Visit(const Symbol *node, const SymbolMap &symbol_map) {
     gcov_write_unsigned(node->pos_counts.size());
     gcov_write_unsigned(node->callsites.size());
     for (const auto &pos_count : node->pos_counts) {
@@ -367,7 +367,7 @@ class ProfileDumper : public SymbolTraverser {
     }
   }
 
-  virtual void Visit(const Symbol *node) {
+  virtual void Visit(const Symbol *node, const SymbolMap &symbol_map) {
     printf("Writing symbol: ");
     node->Dump(4);
     printf("\n");
