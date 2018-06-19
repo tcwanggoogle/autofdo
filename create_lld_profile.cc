@@ -37,8 +37,8 @@ struct LLDProfileBuilder : SymbolTraverser {
   void Visit(const Symbol *node) {
     for (const auto &pos_count : node->pos_counts)
       for (const auto &target_count : pos_count.second.target_map)
-        os << target_count.second << ' ' << node->name() << ' '
-           << target_count.first << '\n';
+        os << node->name() << ' ' << target_count.first
+           << ' ' << target_count.second << '\n';
   }
 
   void Start(const SymbolMap &symbol_map) {
