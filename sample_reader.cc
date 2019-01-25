@@ -244,6 +244,16 @@ bool PerfDataSampleReader::Append(const string &profile_file) {
       }
     }
   }
+
+  // tcwang: Add a check to make sure the users does not specify a mismatch binary name
+  if (parser.parsed_events().size() > 0 &&
+      address_count_map_.size() == 0) {
+    LOG(ERROR) << "Parser parsed " <<
+        parser.parsed_events().size() <<
+        " events but none of them found in the binary. " <<
+        "Please check your binary name [" << focus_binary << "] (Note that no prefix or suffix allowed)";
+    return false;
+  }
   return true;
 }
 }  // namespace autofdo
