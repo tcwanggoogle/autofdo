@@ -86,7 +86,9 @@ bool SampleReader::ReadAndSetTotalCount() {
 }
 
 bool FileSampleReader::Read() {
-  return Append(profile_file_);
+  for (auto f : profile_file_)
+    if (!Append(f)) return false;
+  return true;
 }
 
 bool TextSampleReaderWriter::Append(const string &profile_file) {
@@ -161,9 +163,9 @@ void TextSampleReaderWriter::Merge(const SampleReader &reader) {
 }
 
 bool TextSampleReaderWriter::Write(const char *aux_info) {
-  FILE *fp = fopen(profile_file_.c_str(), "w");
+  FILE *fp = fopen(profile_file_[0].c_str(), "w");
   if (fp == NULL) {
-    LOG(ERROR) << "Cannot open " << profile_file_ << " to write";
+    LOG(ERROR) << "Cannot open " << profile_file_[0] << " to write";
     return false;
   }
 
@@ -189,7 +191,7 @@ bool TextSampleReaderWriter::Write(const char *aux_info) {
 }
 
 bool TextSampleReaderWriter::IsFileExist() const {
-  FILE *fp = fopen(profile_file_.c_str(), "r");
+  FILE *fp = fopen(profile_file_[0].c_str(), "r");
   if (fp == NULL) {
     return false;
   } else {
@@ -241,6 +243,16 @@ bool PerfDataSampleReader::Append(const string &profile_file) {
                                  event.branch_stack[i].to.offset())]++;
       }
     }
+  }
+
+  // tcwang: Add a check to make sure the users does not specify a mismatch binary name
+  if (parser.parsed_events().size() > 0 &&
+      address_count_map_.size() == 0) {
+    LOG(ERROR) << "Parser parsed " <<
+        parser.parsed_events().size() <<
+        " events but none of them found in the binary. " <<
+        "Please check your binary name [" << focus_binary << "] (Note that no prefix or suffix allowed)";
+    return false;
   }
   return true;
 }

@@ -89,7 +89,7 @@ class SampleReader {
 // Base class that reads in the profile from a sample data file.
 class FileSampleReader : public SampleReader {
  public:
-  explicit FileSampleReader(const string &profile_file)
+  explicit FileSampleReader(const std::vector<string> &profile_file)
       : profile_file_(profile_file) {}
 
   virtual bool Append(const string &profile_file) = 0;
@@ -97,7 +97,7 @@ class FileSampleReader : public SampleReader {
  protected:
   virtual bool Read();
 
-  string profile_file_;
+  std::vector<string> profile_file_;
 };
 
 // Reads/Writes sample data from/to text file.
@@ -115,9 +115,9 @@ class FileSampleReader : public SampleReader {
 // addr_n:count_n
 class TextSampleReaderWriter : public FileSampleReader {
  public:
-  explicit TextSampleReaderWriter(const string &profile_file) :
-      FileSampleReader(profile_file) { }
-  explicit TextSampleReaderWriter() : FileSampleReader("") { }
+  explicit TextSampleReaderWriter(const std::vector<string> &profile_file)
+      : FileSampleReader(profile_file) {}
+  explicit TextSampleReaderWriter() : FileSampleReader({""}) { }
   virtual bool Append(const string &profile_file);
   void Merge(const SampleReader &reader);
   // Writes the profile to file, and appending aux_info at the end.
@@ -132,9 +132,6 @@ class TextSampleReaderWriter : public FileSampleReader {
   void IncBranch(uint64 from, uint64 to) {
     branch_count_map_[Branch(from, to)]++;
   }
-  void set_profile_file(const string &file) {
-    profile_file_ = file;
-  }
 
  private:
   DISALLOW_COPY_AND_ASSIGN(TextSampleReaderWriter);
@@ -143,9 +140,9 @@ class TextSampleReaderWriter : public FileSampleReader {
 // Reads in the sample data from 'perf -g' output file.
 class PerfDataSampleReader : public FileSampleReader {
  public:
-  explicit PerfDataSampleReader(const string &profile_file,
-                                const string &re) :
-     FileSampleReader(profile_file), focus_binary_re_(re) { }
+  explicit PerfDataSampleReader(const std::vector<string> &profile_file,
+                                const string &re)
+      : FileSampleReader(profile_file), focus_binary_re_(re) {}
   virtual bool Append(const string &profile_file);
 
  private:

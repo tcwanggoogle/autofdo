@@ -144,21 +144,21 @@ class SymbolTraverser {
         continue;
       }
       VisitTopSymbol(name_symbol.first, name_symbol.second);
-      Traverse(name_symbol.second);
+      Traverse(name_symbol.second, symbol_map);
     }
   }
   virtual void VisitTopSymbol(const string &name, const Symbol *node) {}
-  virtual void Visit(const Symbol *node) = 0;
+  virtual void Visit(const Symbol *node, const SymbolMap &symbol_map) = 0;
   virtual void VisitCallsite(const Callsite &offset) {}
   int level_;
 
  private:
-  void Traverse(const Symbol *node) {
+  void Traverse(const Symbol *node, const SymbolMap &symbol_map) {
     level_++;
-    Visit(node);
+    Visit(node, symbol_map);
     for (const auto &callsite_symbol : node->callsites) {
       VisitCallsite(callsite_symbol.first);
-      Traverse(callsite_symbol.second);
+      Traverse(callsite_symbol.second, symbol_map);
     }
     level_--;
   }
@@ -175,7 +175,7 @@ class StringTableUpdater: public SymbolTraverser {
   }
 
  protected:
-  void Visit(const Symbol *node) override {
+  void Visit(const Symbol *node, const SymbolMap &symbol_map) override {
     for (const auto &pos_count : node->pos_counts) {
       for (const auto &name_count : pos_count.second.target_map) {
         (*map_)[name_count.first] = 0;
